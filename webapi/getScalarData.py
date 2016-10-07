@@ -55,8 +55,13 @@ class getScalarData():
                   'metadata' : self.metadata,
                   'rowLimit' : self.rowLimit}
         link = urllib.urlencode(params)
-        response = urllib.urlopen(endpoint+link)
-        
+
+        try:
+            response = urllib.urlopen(endpoint+link)
+        except:
+            # INCLUDE ERROR HANDLING FOR URL REQUESTS HERE
+            pass
+
         self.json_string = response.read()
 
     def __JSON_parse(self):
@@ -68,7 +73,11 @@ class getScalarData():
         s_parsed = json.JSONDecoder().decode(s)
         sensorData = dict()
         
-        for sensor in s_parsed['sensorData']:
-            sensorData[sensor['sensor']] = pd.DataFrame.from_dict(sensor['data'])
-        
-        self.sensorData = sensorData
+        try:
+            for sensor in s_parsed['sensorData']:
+                sensorData[sensor['sensor']] = pd.DataFrame.from_dict(sensor['data'])
+            
+            self.sensorData = sensorData
+        except KeyError, e:
+            for error in s_parsed['errors']:
+                print error
