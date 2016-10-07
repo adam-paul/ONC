@@ -16,8 +16,17 @@ class getScalarData():
         '''
 
         self.method = method
-        self.dateFrom = dateFrom
-        self.dateTo = dateTo
+
+        if isinstance(dateFrom, dt.datetime):
+            self.dateFrom = dateFrom.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]+'Z'
+        else:
+            self.dateFrom = dateFrom
+            
+        if isinstance(dateTo, dt.datetime):
+            self.dateTo = dateTo.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]+'Z'
+        else:
+            self.dateTo = dateTo
+
         self.token = token
         self.stationCode = stationCode
         self.deviceCategory = deviceCategory
@@ -27,12 +36,15 @@ class getScalarData():
 
         print 'Retrieving data from web service...'
 
-    def ScalarDataAPIService(self):
+        self.__ScalarDataAPIService()
+        self.__JSON_parse()
+
+    def __ScalarDataAPIService(self):
         '''
         Docstring
         '''
 
-        endpoint = 'http://dmas.uvic.ca/api/scalardata'    
+        endpoint = 'http://dmas.uvic.ca/api/scalardata?'    
         params = {'method' : self.method,
                   'token' : self.token,
                   'station' : self.stationCode,
@@ -43,12 +55,11 @@ class getScalarData():
                   'metadata' : self.metadata,
                   'rowLimit' : self.rowLimit}
         link = urllib.urlencode(params)
-        req = urllib.request(endpoint, link)
-        response = urllib.urlopen(req)
+        response = urllib.urlopen(endpoint+link)
         
         self.json_string = response.read()
-            
-    def json_parse(self):
+
+    def __JSON_parse(self):
         '''
         Docstring
         '''
