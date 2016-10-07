@@ -8,7 +8,7 @@ class getScalarData():
 
     def __init__(self, method = 'getByStation', dateFrom = dt.datetime.today()-dt.timedelta(1), 
                  dateTo = dt.datetime.today(), token = '', stationCode = 'TWDP', 
-                 deviceCategory = 'TSG', sensors = '', metadata = 'full', rowLimit = []):
+                 deviceCategory = 'TSG', sensors = '', metadata = 'full', rowLimit = ''):
         '''
         
         Constructor
@@ -36,8 +36,18 @@ class getScalarData():
 
         print 'Retrieving data from web service...'
 
-        self.__ScalarDataAPIService()
-        self.__JSON_parse()
+        try:
+            self.__ScalarDataAPIService()
+        except IOError, e:
+            # URL ERRORS HERE
+            print str(e[0]) + ' : ' + str(e[1]) + ', ' + str(e[2])
+
+        try:
+            self.__JSON_parse()
+        except:
+            print 'There was an error retrieving the data.'
+
+        print 'Retrieved <data stuff> successfully'
 
     def __ScalarDataAPIService(self):
         '''
@@ -47,7 +57,7 @@ class getScalarData():
         endpoint = 'http://dmas.uvic.ca/api/scalardata?'
         params = {'method' : self.method,
                   'token' : self.token,
-                  'stationCode' : self.stationCode,
+                  'station' : self.stationCode,
                   'deviceCategory' : self.deviceCategory,
                   'dateTo' : self.dateTo,
                   'dateFrom' : self.dateFrom,
@@ -55,13 +65,8 @@ class getScalarData():
                   'metadata' : self.metadata,
                   'rowLimit' : self.rowLimit}
         link = urllib.urlencode(params)
-
-        try:
-            response = urllib.urlopen(endpoint+link)
-        except:
-            # INCLUDE ERROR HANDLING FOR URL REQUESTS HERE
-            pass
-
+        response = urllib.urlopen(endpoint+link)
+   
         self.json_string = response.read()
 
     def __JSON_parse(self):
@@ -78,6 +83,6 @@ class getScalarData():
                 sensorData[sensor['sensor']] = pd.DataFrame.from_dict(sensor['data'])
             
             self.sensorData = sensorData
-        except KeyError, e:
+        except KeyError:
             for error in s_parsed['errors']:
-                print error
+                print error['errorMessage'] + ' : ' + error['parameter']
