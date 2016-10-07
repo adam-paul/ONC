@@ -7,8 +7,8 @@ import urllib
 class getScalarData():
 
     def __init__(self, method = 'getByStation', dateFrom = dt.datetime.today()-dt.timedelta(1), 
-                 dateTo = dt.datetime.today(), token = '', stationCode = '', deviceCategory = '', 
-                 sensors = '', metadata = 'full', rowLimit = []):
+                 dateTo = dt.datetime.today(), token = '', stationCode = 'TWDP', 
+                 deviceCategory = 'TSG', sensors = '', metadata = 'full', rowLimit = []):
         '''
         
         Constructor
@@ -44,10 +44,10 @@ class getScalarData():
         Docstring
         '''
 
-        endpoint = 'http://dmas.uvic.ca/api/scalardata?'    
+        endpoint = 'http://dmas.uvic.ca/api/scalardata?'
         params = {'method' : self.method,
                   'token' : self.token,
-                  'station' : self.stationCode,
+                  'stationCode' : self.stationCode,
                   'deviceCategory' : self.deviceCategory,
                   'dateTo' : self.dateTo,
                   'dateFrom' : self.dateFrom,
