@@ -8,5 +8,5 @@ The arguments a cpa instance takes are:
 * data: A numpy array containing data to be analyzed
 * filter_on: A boolean representing whether or not post-analysis bandpass filtering should be done
 * trend_on: A boolean representing whether or not post-analysis trend filtering should be done
-* f: A "frequency" representing the cutof for bandpass filtering; units need to be whatever timescale the data is presented in (e.g. 400 minutes for minute-averaged data, in this case)
+* f: A "frequency" representing the cutof for bandpass filtering; units need to be whatever timescale the data is presented in (e.g. 240 minutes for minute-averaged data, in this case)
 * C: A scale constant which has defaults hardcoded in but can be user defined (tunes the sensitivity of change point analysis)
